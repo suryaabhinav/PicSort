@@ -31,6 +31,19 @@ def stage_b(
     models: Models,
     progress: ProgressFn = None,
 ) -> pd.DataFrame:
+    """Stage B: Face detection and identity clustering
+
+    Args:
+        root (Path): Root directory of images
+        df_stage_a (pd.DataFrame): DataFrame of stage A results
+        cfg (AppConfig): Configuration object
+        ctx (RuntimeContext): Runtime context
+        models (Models): Models object
+        progress (ProgressFn, optional): Progress callback function. Defaults to None.
+
+    Returns:
+        pd.DataFrame: DataFrame of stage B results
+    """
 
     fast_no_identity: bool = getattr(cfg.face, "fast_no_identity", False)
     similarity_treshold: float = cfg.face.sim_tresh

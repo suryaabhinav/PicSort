@@ -5,10 +5,12 @@ import numpy as np
 
 
 def contrast(gray: np.ndarray, mask: Optional[np.ndarray] = None, eps: float = 1e-6) -> float:
+    """Contrast metric"""
     roi = gray[mask] if mask is not None else gray.reshape(-1)
     return float(np.std(roi)+eps)
 
 def tenegrad(gray: np.ndarray, mask: Optional[np.ndarray] = None) -> float:
+    """Tenegrad metric"""
     gx = cv2.Sobel(gray, cv2.CV_32F, 1, 0, ksize=3)
     gy = cv2.Sobel(gray, cv2.CV_32F, 0, 1, ksize=3)
     g2 = gx**2 + gy**2
@@ -17,6 +19,7 @@ def tenegrad(gray: np.ndarray, mask: Optional[np.ndarray] = None) -> float:
     return float(np.mean(g2)) if g2.size else 0
 
 def multiscale_focus(gray: np.ndarray, mask: Optional[np.ndarray]=None, levels: int = 3) -> float:
+    """Multiscale focus metric"""
     scores = []
     for _ in range(levels):
         scores.append(tenegrad(gray, mask))

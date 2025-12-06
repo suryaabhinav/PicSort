@@ -12,6 +12,7 @@ VALID_EXTS = {".jpg", ".jpeg", ".png", ".bmp", ".tiff", ".tif", ".webp", ".gif"}
 
 
 def list_images(root: Path) -> List[Path]:
+    """List all images in the given directory"""
     return [
         p
         for p in root.rglob("*")
@@ -20,6 +21,7 @@ def list_images(root: Path) -> List[Path]:
 
 
 def md5_hash(path: Path) -> str:
+    """Calculate MD5 hash of a file"""
     h = hashlib.md5()
     with open(path, "rb") as f:
         for chunk in iter(lambda: f.read(8192), b""):
@@ -28,12 +30,21 @@ def md5_hash(path: Path) -> str:
 
 
 def load_pil_exif_rgb(path: Path) -> Image.Image:
+    """Load image from path with EXIF orientation"""
     im = Image.open(path)
     im = ImageOps.exif_transpose(im).convert("RGB")
     return im
 
 
 def load_bgr_exif_safe(path: Path) -> Optional[np.ndarray]:
+    """Load image from path with EXIF orientation and convert to BGR"""
+
+    Args:
+        path (Path): Path to image
+
+    Returns:
+        Optional[np.ndarray]: BGR image array
+    """
     try:
         pil = load_pil_exif_rgb(path)
         arr = np.array(pil)

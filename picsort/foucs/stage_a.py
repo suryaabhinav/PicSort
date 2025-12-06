@@ -24,8 +24,8 @@ def stage_a(
     Args:
         imgs (List): List of image paths.
         yolo_results (Dict[str, Dict[str, Any]]): YOLO results for each image.
-        progress (ProgressFn, optional): Progress callback function. Defaults to None.
         cfg (AppConfig, optional): AppConfig object containing configuration parameters. Defaults to AppConfig().
+        progress (ProgressFn, optional): Progress callback function. Defaults to None.
 
     Returns:
         pd.DataFrame: DataFrame containing focus metrics for each image.

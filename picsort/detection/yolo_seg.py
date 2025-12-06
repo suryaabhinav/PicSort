@@ -83,7 +83,15 @@ class YOLOProcessor:
             return None
 
     def process_batch(self, image_paths: List[Path], batch_size: int = self.batch_size) -> Dict[str, Dict]:
-        """Process images in batchs for maskes and person counts"""
+        """Process images in batchs for maskes and person counts
+
+        Args:
+            image_paths (List[Path]): List of image paths
+            batch_size (int, optional): Batch size. Defaults to self.batch_size.
+
+        Returns:
+            Dict[str, Dict]: Dictionary of image paths and their masks and person counts
+        """
 
         results = {}
         if not self.seg_ok:
