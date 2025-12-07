@@ -10,6 +10,7 @@ from picsort.deduplication.stage_duplicates import stage_duplicates
 from picsort.detection.yolo_seg import YOLOProcessor
 from picsort.faces.stage_b import stage_b
 from picsort.foucs.stage_a import stage_a
+from picsort.scene.stage_c import stage_c
 from picsort.io.utils import list_images
 
 
@@ -74,10 +75,18 @@ def run_stage_b_faces(
     return df_stage_b
 
 
-def build_df_final(
-    df_stage_a: pd.DataFrame, df_stage_b: pd.DataFrame, cfg: AppConfig
+def run_stage_c_scene(
+    root: Path,
+    df_stage_b: pd.DataFrame,
+    cfg: AppConfig,
+    ctx: RuntimeContext,
+    models: Models,
+    progress=None,
 ) -> pd.DataFrame:
-    return pd.DataFrame()
+
+    df_stage_c = stage_c(root, df_stage_b, cfg, ctx, models, progress)
+
+    return df_stage_c
 
 
 def apply_grouping(root: Path, df_final: pd.DataFrame, dry_run: bool = True) -> Dict[str, Any]:

@@ -52,8 +52,15 @@ class FaceConfig:
 
 
 @dataclass
+class SceneConfig:
+    batch_size: int = 32
+    hdbscan_min_cluster_size: int = 2
+
+
+@dataclass
 class AppConfig:
     root: str
     focus: FocusConfig = FocusConfig()
     yolo: YoloConfig = YoloConfig()
     face: FaceConfig = FaceConfig()
+    scene: SceneConfig = SceneConfig()

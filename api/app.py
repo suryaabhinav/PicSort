@@ -8,9 +8,13 @@ from sse_starlette import EventSourceResponse
 from api.progress import registry
 from api.schema import StartRunRequest
 from picsort.config import AppConfig
-from picsort.pipeline.orchestrator import (apply_grouping, build_df_final,
-                                           run_stage_a, run_stage_b_faces,
-                                           run_stage_duplicates)
+from picsort.pipeline.orchestrator import (
+    apply_grouping,
+    build_df_final,
+    run_stage_a,
+    run_stage_b_faces,
+    run_stage_duplicates,
+)
 
 app = FastAPI(title="PicSort API", description="PicSort API", version="0.0.1")
 

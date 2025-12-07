@@ -11,11 +11,8 @@ from picsort.detection.retina_mtcnn import (
     detect_faces_smart,
 )
 from picsort.detection.yolo_face import build_yolov8_face
-from picsort.faces.embeddings import (
-    embed_face_batch,
-    graph_clusters,
-    remap_labels_sequential,
-)
+from picsort.faces.clustering import graph_clusters, remap_labels_sequential
+from picsort.faces.embeddings import embed_face_batch, get_facenet_embedder
 from picsort.io.utils import load_bgr_exif_safe
 from picsort.pipeline.orchestrator import log
 from picsort.utils.helpers import to_box_list_strict
@@ -42,7 +39,7 @@ def stage_b(
         progress (ProgressFn, optional): Progress callback function. Defaults to None.
 
     Returns:
-        pd.DataFrame: DataFrame of stage B results
+        pd.DataFrame: DataFrame of stage B results with _face_boxesm num_faces_found, and identity labels
     """
 
     fast_no_identity: bool = getattr(cfg.face, "fast_no_identity", False)
