@@ -7,12 +7,12 @@ from sse_starlette import EventSourceResponse
 
 from api.progress import registry
 from api.schema import StartRunRequest
-from picsort.config import AppConfig
+from picsort.config import AppConfig, Models, RuntimeContext
 from picsort.pipeline.orchestrator import (
     apply_grouping,
-    build_df_final,
     run_stage_a,
     run_stage_b_faces,
+    run_stage_c_scene,
     run_stage_duplicates,
 )
 
@@ -61,6 +61,8 @@ async def start_pipeline(request: StartRunRequest, bg_tasks: BackgroundTasks):
     async def run_job():
         try:
             cfg = AppConfig(root=request.root)
+            ctx = RuntimeContext()
+            models = Models()
             if request.batch_size:
                 cfg.yolo.batch_size = request.batch_size
 
@@ -99,6 +101,8 @@ async def start_pipeline(request: StartRunRequest, bg_tasks: BackgroundTasks):
                 Path(request.root),
                 df_stage_duplicates,
                 cfg,
+                ctx,
+                models,
                 progress=lambda i, t, msg=None: asyncio.create_task(
                     run.emit(
                         {
@@ -128,6 +132,8 @@ async def start_pipeline(request: StartRunRequest, bg_tasks: BackgroundTasks):
                     Path(request.root),
                     df_stage_a,
                     cfg,
+                    ctx,
+                    models
                     progress=lambda i, t, msg=None: asyncio.create_task(
                         run.emit(
                             {
@@ -148,23 +154,43 @@ async def start_pipeline(request: StartRunRequest, bg_tasks: BackgroundTasks):
             else:
                 df_stage_b = None
 
-            # Stage Grouping
-            run.stage, run.progress, run.message = "grouping", 0.0, "Building final groups"
-            await run.emit({"event": "stage", "stage": "grouping", "progress": 0.0, "msg": "Begin"})
+            # Stage C: Scene Clustring
+            run.stage, run.progress, run.message = "scene clustring", 0.0, "Clustring landscape scenes"
+            await run.emit({"event": "stage", "stage": "scene clustring", "progress": 0.0, "msg": "Begin"})
 
-            df_final = await asyncio.to_thread(build_df_final, df_stage_a, df_stage_b, cfg)
+            df_stage_c = await asyncio.to_thread(
+                run_stage_c_scene,
+                Path(request.root),
+                df_stage_b,
+                cfg,
+                ctx,
+                models,
+                progress=lambda i, t, msg=None: asyncio.create_task(
+                    run.emit(
+                        {
+                            "event": "progress",
+                            "stage": "scene clustring",
+                            "progress": i / max(t, 1),
+                            "msg": msg or ""
+                        }
+                    )
+                )
+            )
             await run.emit(
-                {"events": "stage", "stage": "grouping", "progress": 0.5, "msg": "Preview"}
+                {"events": "stage", "stage": "scene clustring", "progress": 1.0, "msg": "Completed"}
             )
 
             # Stage Apply Grouping
-            result = await asyncio.to_thread(
-                apply_grouping, Path(request.root), df_final, request.dry_run
-            )
-            await run.emit({"event": "result", "data": result})
+            run.stage, run.progress, run.message = "grouping", 0.0, "Applying grouping"
+            await run.emit({"event": "stage", "stage":"grouping","progress": 0.0, "msg": "Begin"})
+            
 
-            run.stage, run.progress, run.message = "done", 1.0, "All Done"
-            await run.emit({"event": "done", "ok": True})
+            result = await asyncio.to_thread(
+                apply_grouping, df_stage_c,
+            )
+            await run.emit({"event": "stage", "stage": "grouping", "progress": 1.0, "msg": "Completed"})
+
+            await run.emit({"event": "done", "ok": True, "result": result})
 
         except Exception as e:
             run.error = str(e)

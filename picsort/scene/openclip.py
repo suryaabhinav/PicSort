@@ -1,6 +1,3 @@
-from picsort.config import AppConfig
-import torch
-from picsort.io.utils import load_pil_exif_rgb
 from pathlib import Path
 from typing import Callable, Dict, List, Tuple
 
@@ -9,7 +6,8 @@ import PIL.Image
 import torch
 import torch.nn as nn
 
-from picsort.config import RuntimeContext
+from picsort.config import AppConfig, RuntimeContext
+from picsort.io.utils import load_pil_exif_rgb
 from picsort.pipeline.orchestrator import log
 
 

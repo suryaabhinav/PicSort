@@ -10,8 +10,9 @@ from picsort.deduplication.stage_duplicates import stage_duplicates
 from picsort.detection.yolo_seg import YOLOProcessor
 from picsort.faces.stage_b import stage_b
 from picsort.foucs.stage_a import stage_a
-from picsort.scene.stage_c import stage_c
+from picsort.grouping.final import grouping
 from picsort.io.utils import list_images
+from picsort.scene.stage_c import stage_c
 
 
 def make_logger(script_path: Path) -> logging.Logger:
@@ -41,7 +42,12 @@ def run_stage_duplicates(root: Path, cfg: AppConfig, progress=None) -> pd.DataFr
 
 
 def run_stage_a(
-    root: Path, df_stage_duplicates: pd.DataFrame, cfg: AppConfig, progress=None, ctx: RuntimeContext, models: Models, progress: None
+    root: Path,
+    df_stage_duplicates: pd.DataFrame,
+    cfg: AppConfig,
+    ctx: RuntimeContext,
+    models: Models,
+    progress: None,
 ) -> pd.DataFrame:
 
     unique_paths_set = set(
@@ -89,5 +95,8 @@ def run_stage_c_scene(
     return df_stage_c
 
 
-def apply_grouping(root: Path, df_final: pd.DataFrame, dry_run: bool = True) -> Dict[str, Any]:
+def apply_grouping(df_stage_c: pd.DataFrame) -> Dict[str, Any]:
+
+    df_final = grouping(df_stage_c)
+
     return {"moved": 0, "skipped": 0, "dry_run": dry_run}
