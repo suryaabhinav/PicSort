@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 from typing import Dict, List, Optional
 
@@ -5,9 +6,9 @@ import cv2
 import numpy as np
 from ultralytics import YOLO
 
+from api.logging_config import get_logger, log
 from picsort.config import AppConfig, Models, RuntimeContext
 from picsort.io.utils import load_bgr_exif_safe
-from picsort.pipeline.orchestrator import log
 
 
 class YOLOProcessor:
@@ -15,15 +16,11 @@ class YOLOProcessor:
     Unified YOLO porcessor for segmentation and person detection with batch support
     """
 
-    def __init__(
-        self,
-        cfg: AppConfig,
-        ctx: RuntimeContext,
-        models: Models
-    ):
+    def __init__(self, cfg: AppConfig, ctx: RuntimeContext, models: Models):
         self.seg_ok = False
         self.person_conf = cfg.yolo.person_conf
-        self.imgsz=cfg.yolo.imgsz
+        self.seg_conf = cfg.yolo.seg_conf
+        self.imgsz = cfg.yolo.imgsz
         self.batch_size = cfg.yolo.batch_size
         self.device = ctx.device_str
         self.seg_model_path = models.yolo_seg_model
@@ -61,17 +58,17 @@ class YOLOProcessor:
                 return None
 
             masks = result.masks.data
-            if hasattr(masks, "device") and masks.device.type!="cpu":
+            if hasattr(masks, "device") and masks.device.type != "cpu":
                 masks = masks.cpu()
-            masks = masks.np.astype(bool)
+            masks = masks.numpy().astype(bool)
 
             orig_shape = result.orig_shape
-            h, w = orig_shape[0], or orig_shape[1]
+            h, w = orig_shape[0], orig_shape[1]
 
             if masks.shape[1] != h or masks.shape[2] != w:
                 resized = []
                 for mask in masks:
-                    mask8 = mask.astype(np.uint8)* 255
+                    mask8 = mask.astype(np.uint8) * 255
                     mask8 = cv2.resize(mask8, (w, h), interpolation=cv2.INTER_NEAREST)
                     resized.append(mask8.astype(bool))
                 masks = np.stack(resized, axis=0)
@@ -82,12 +79,12 @@ class YOLOProcessor:
             log.warning(f"Failed to extract mask: {e}")
             return None
 
-    def process_batch(self, image_paths: List[Path], batch_size: int = self.batch_size) -> Dict[str, Dict]:
+    def process_batch(self, image_paths: List[Path], batch_size: int) -> Dict[str, Dict]:
         """Process images in batchs for maskes and person counts
 
         Args:
             image_paths (List[Path]): List of image paths
-            batch_size (int, optional): Batch size. Defaults to self.batch_size.
+            batch_size (int): Batch size.
 
         Returns:
             Dict[str, Dict]: Dictionary of image paths and their masks and person counts
@@ -109,18 +106,18 @@ class YOLOProcessor:
             return results
 
         for i in range(0, len(image_paths), batch_size):
-            batch_paths = image_paths[i: i+batch_size]
+            batch_paths = image_paths[i : i + batch_size]
 
             if self.seg_ok:
                 try:
                     seg_results = self.seg_model.predict(
-                        source = [str(p) for p in batch_paths],
+                        source=[str(p) for p in batch_paths],
                         batch=batch_size,
                         imgsz=self.imgsz,
                         conf=self.seg_conf,
                         device=self.device,
                         verbose=False,
-                        stream=False
+                        stream=False,
                     )
 
                     for path, result in zip(batch_paths, seg_results):
@@ -128,7 +125,7 @@ class YOLOProcessor:
 
                         person_count = 0
                         boxes = result.boxes
-                        if boxes is not None and len(boxes)>0:
+                        if boxes is not None and len(boxes) > 0:
                             cls = boxes.cls.cpu().numpy().astype(int)
                             conf = boxes.conf.cpu().numpy()
 
@@ -142,7 +139,6 @@ class YOLOProcessor:
                                 keep = is_person & is_confident
                                 person_count = int(keep.sum())
 
-                            
                         if mask is None:
                             bgr = load_bgr_exif_safe(path)
                             if bgr is not None:
@@ -162,7 +158,7 @@ class YOLOProcessor:
                     log.warning(f"[WARNING] YOLO seg batch failed: {e}")
                     for path in batch_paths:
                         bgr = load_bgr_exif_safe(path)
-                        if bgr s not None:
+                        if bgr is not None:
                             result[path.name] = {
                                 "mask": self._ellipse(bgr),
                                 "person_count": 0,
@@ -180,4 +176,3 @@ class YOLOProcessor:
                         }
 
         return results
-

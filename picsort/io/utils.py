@@ -1,4 +1,5 @@
 import hashlib
+import logging
 from pathlib import Path
 from typing import List, Optional
 
@@ -6,7 +7,7 @@ import cv2
 import numpy as np
 from PIL import Image, ImageOps
 
-from picsort.pipeline.orchestrator import log
+from api.logging_config import get_logger, log
 
 VALID_EXTS = {".jpg", ".jpeg", ".png", ".bmp", ".tiff", ".tif", ".webp", ".gif"}
 
@@ -37,7 +38,7 @@ def load_pil_exif_rgb(path: Path) -> Image.Image:
 
 
 def load_bgr_exif_safe(path: Path) -> Optional[np.ndarray]:
-    """Load image from path with EXIF orientation and convert to BGR"""
+    """Load image from path with EXIF orientation and convert to BGR
 
     Args:
         path (Path): Path to image

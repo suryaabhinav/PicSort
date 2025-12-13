@@ -1,12 +1,14 @@
+import logging
 from typing import Counter
 
 import pandas as pd
 
-from picsort.pipeline.orchestrator import log
+from api.logging_config import get_logger, log
 
 
 def compute_id_image_counts(df_stage_c: pd.DataFrame) -> pd.DataFrame:
     """Compute the number of images each face ID appears in."""
+
     id_image_counts = Counter()
     for _, row in df_stage_c.iterrows():
         labels = row.get("_face_id_labels", [])

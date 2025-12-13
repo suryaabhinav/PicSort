@@ -1,13 +1,14 @@
 import importlib
+import logging
 from typing import List, Optional, Tuple
 
 import cv2
 import numpy as np
 import torch
 
+from api.logging_config import get_logger, log
 from picsort.config import RuntimeContext
 from picsort.detection.yolo_face import detect_faces_yolo_smart
-from picsort.pipeline.orchestrator import log
 from picsort.utils.helpers import rot90_ccw
 
 

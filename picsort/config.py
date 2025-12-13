@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Optional
 
 
@@ -22,7 +22,7 @@ class Models:
 
 @dataclass
 class FocusConfig:
-    t_subj: float = 32.0
+    t_subj: float = 10.0
     t_bg: float = 8.0
     closeness: float = 5.0
     multiscale_level: int = 3
@@ -60,7 +60,7 @@ class SceneConfig:
 @dataclass
 class AppConfig:
     root: str
-    focus: FocusConfig = FocusConfig()
-    yolo: YoloConfig = YoloConfig()
-    face: FaceConfig = FaceConfig()
-    scene: SceneConfig = SceneConfig()
+    focus: FocusConfig = field(default_factory=FocusConfig)
+    yolo: YoloConfig = field(default_factory=YoloConfig)
+    face: FaceConfig = field(default_factory=FaceConfig)
+    scene: SceneConfig = field(default_factory=SceneConfig)

@@ -1,10 +1,12 @@
+import logging
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
+from api.logging_config import get_logger, log
 from picsort.config import AppConfig, Models, RuntimeContext
-from picsort.pipeline.orchestrator import log
+from picsort.scene.hdbscan_wrap import cluster_hdbscan
 from picsort.scene.openclip import embed_images_openclip_batch, get_openclip
 
 
@@ -58,12 +60,12 @@ def stage_c(
         return df_stage_c
 
     names = list(embeds.keys())
-    E = np.vstack([embeds[n] for n in names]).astypes(np.float64, copy=False)
+    E = np.vstack([embeds[n] for n in names]).astype(np.float64, copy=False)
     labels = cluster_hdbscan(E, cfg)
 
     for name, label in zip(names, labels):
         mask = df_stage_c["path"] == name
-        df_stage_c[mask, "scene_group"] = int(label)
+        df_stage_c.loc[mask, "scene_group"] = int(label)
 
     log.info(f"[INFO] Stage C: Found {len(df_stage_c["scene_group"].unique())} unique scene groups")
     return df_stage_c

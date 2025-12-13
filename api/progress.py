@@ -12,10 +12,24 @@ class RunState:
         self.progress = 0.0
         self.message = ""
         self.error: Optional[str] = None
-        self.data_paths: Dict[str, str] = {}
+        self.timings: Dict[str, float] = {}
+        self.paths: Dict[str, str] = {}
+        self.root: Optional[str] = None
+        self.cancel_event: asyncio.Event = asyncio.Event()
         self.events: asyncio.Queue = asyncio.Queue()
+        self.bg_task: Optional[asyncio.Task] = None
+        self.loop: Optional[asyncio.AbstractEventLoop] = None
 
-    async def emit(self, event: Dict[str, Any]):
+    def emit_threadsafe(self, event: Dict[str, Any]) -> None:
+        if not self.loop:
+            raise RuntimeError("RunState.loop not initialized")
+
+        def _put():
+            self.events.put_nowait(event)
+
+        self.loop.call_soon_threadsafe(_put)
+
+    async def emit(self, event: Dict[str, Any]) -> None:
         await self.events.put(event)
 
 

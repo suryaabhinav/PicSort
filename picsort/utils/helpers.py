@@ -15,7 +15,7 @@ def rot90_cw(bgr: np.ndarray) -> np.ndarray:
 
 def to_box_list_strict(boxes: np.ndarray) -> List[Tuple[int, int, int, int]]:
     """Return pure-python list of (x1, y1, x2, y2)"""
-    if boxes in None:
+    if boxes is None:
         return []
     try:
         arr = np.asarray(boxes)
@@ -33,5 +33,5 @@ def to_box_list_strict(boxes: np.ndarray) -> List[Tuple[int, int, int, int]]:
             if isinstance(b, (list, tuple)) and len(b) >= 4:
                 x1, y1, x2, y2 = map(int, b[:4])
                 if x2 > x1 and y2 > y1:
-                    out.append(x1, y1, x2, y2)
+                    out.append((x1, y1, x2, y2))
         return out

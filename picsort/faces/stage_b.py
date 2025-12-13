@@ -1,9 +1,11 @@
+import logging
 from pathlib import Path
 from typing import Callable, Dict, List, Optional, Tuple
 
 import numpy as np
 import pandas as pd
 
+from api.logging_config import get_logger, log
 from picsort.config import AppConfig, Models, RuntimeContext
 from picsort.detection.retina_mtcnn import (
     build_mtcnn,
@@ -14,7 +16,6 @@ from picsort.detection.yolo_face import build_yolov8_face
 from picsort.faces.clustering import graph_clusters, remap_labels_sequential
 from picsort.faces.embeddings import embed_face_batch, get_facenet_embedder
 from picsort.io.utils import load_bgr_exif_safe
-from picsort.pipeline.orchestrator import log
 from picsort.utils.helpers import to_box_list_strict
 
 ProgressFn = Optional[Callable[[int, int, Optional[str]], None]]
@@ -60,7 +61,7 @@ def stage_b(
 
     if models.yolo_face_model is None and models.retina_detect_fn is None and models.mtcnn is None:
         yolo_enabled, yolo_face_model = build_yolov8_face(
-            cfg.face.getattr("weights_path", "./yolov8n-face-lindevs.pt"), ctx
+            getattr(cfg.face, "weights_path", "./yolov8n-face-lindevs.pt"), ctx
         )
         if yolo_enabled:
             models.yolo_face_model = yolo_face_model
@@ -93,7 +94,7 @@ def stage_b(
         boxes, lms = detect_faces_smart(
             bgr=bgr,
             person_count=person_count,
-            rf_enabled=rf_enabled,
+            rf_enabled=rf_enabled if models.retina_detect_fn is not None else False,
             rf_detect_fn=models.retina_detect_fn,
             rf_model=models.retina_model,
             mtcnn=models.mtcnn,
@@ -105,8 +106,8 @@ def stage_b(
             iou=cfg.face.iou,
         )
         boxes_py = to_box_list_strict(boxes)
-        df_stage_b[idx, "_face_boxes"] = boxes_py
-        df_stage_b[idx, "num_faces_found"] = int(len(boxes_py))
+        df_stage_b.at[idx, "_face_boxes"] = boxes_py
+        df_stage_b.at[idx, "num_faces_found"] = int(len(boxes_py))
 
     if not fast_no_identity:
         single_person_with_faces = df_stage_b[

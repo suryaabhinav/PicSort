@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 from typing import Callable, Dict, List, Tuple
 
@@ -6,9 +7,9 @@ import PIL.Image
 import torch
 import torch.nn as nn
 
+from api.logging_config import get_logger, log
 from picsort.config import AppConfig, RuntimeContext
 from picsort.io.utils import load_pil_exif_rgb
-from picsort.pipeline.orchestrator import log
 
 
 def get_openclip(
@@ -35,7 +36,7 @@ def embed_images_openclip_batch(
     model: nn.Module,
     preprocess: Callable[[PIL.Image.Image], torch.Tensor],
     paths: List[Path],
-    cfg: AppConfig
+    cfg: AppConfig,
     ctx: RuntimeContext,
 ) -> Dict[str, np.ndarray]:
     """Batch embed clips using OpenCLIP
@@ -71,7 +72,7 @@ def embed_images_openclip_batch(
                 batch = torch.cat(batch_tensors, dim=0).to(ctx.device_str)
                 with torch.inference_mode():
                     # embeds = model.encode_image(batch).cpu().numpy().astype(np.float32)
-                    feature = model.endcode_image(batch)
+                    feature = model.encode_image(batch)
                 feature_np = feature.detach().cpu().numpy().astype(np.float32)
 
                 for p, v in zip(vaild_paths, feature_np):
@@ -79,5 +80,4 @@ def embed_images_openclip_batch(
             except Exception as e:
                 log.warning(f"[WARNING] OpenCLIP embed failed on {p.name}: {e}")
 
-    return embeds 
-                
+    return embeds

@@ -1,10 +1,11 @@
+import logging
 from typing import List, Optional, Tuple
 
 import numpy as np
 from ultralytics.models.yolo.model import YOLO
 
+from api.logging_config import get_logger, log
 from picsort.config import RuntimeContext
-from picsort.pipeline.orchestrator import log
 from picsort.utils.helpers import rot90_ccw
 
 
