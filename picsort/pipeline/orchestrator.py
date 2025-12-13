@@ -1,5 +1,3 @@
-import asyncio
-import logging
 import time
 from pathlib import Path
 from typing import Any, Dict, Tuple
@@ -17,6 +15,7 @@ from picsort.pipeline.orchestrator_core import (
     run_stage_duplicates,
 )
 from picsort.utils.device import choose_device
+from picsort.utils.helpers import apply_move
 
 log = get_logger()
 
