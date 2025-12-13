@@ -24,7 +24,7 @@ PicSort is an intelligent, automated image organization and sorting pipeline des
 
 1.  **Clone the Repository**
     ```bash
-    git clone <repository-url>
+    git clone https://github.com/suryaabhinav/PicSort.git
     cd PicSort
     ```
 
