@@ -26,7 +26,6 @@ def build_yolov8_face(weights_path: str, ctx: RuntimeContext) -> Tuple[bool, obj
             model.fuse()
         except Exception:
             pass
-        log.info(f"[INFO] YOLOv8 face detector loaded on {ctx.device_str}")
         return True, model
     except Exception as e:
         log.warning(f"YOLOv8-Face build failed: {e}")
@@ -154,7 +153,7 @@ def detect_faces_yolo_smart(
                     for x, y in lm:
                         X, Y = y, W - x
                         pts.append((float(X), float(Y)))
-                    mapped_lms_list.append(np.array(pts), dtype=np.float32)
+                    mapped_lms_list.append(np.array(pts, dtype=np.float32))
 
                 mapped_lms = np.stack(mapped_lms_list, axis=0)
 

@@ -3,9 +3,11 @@ from typing import List, Optional, Tuple
 import cv2
 import numpy as np
 import torch
-from PIL.Image import Image
+from PIL import Image
 
 from picsort.config import RuntimeContext
+
+TORCH_INFERENCE = torch.inference_mode if hasattr(torch, "inference_mode") else torch.no_grad
 
 
 def get_facenet_embedder(ctx: RuntimeContext) -> object:
@@ -69,8 +71,14 @@ def embed_face_batch(
         return None
 
     batch = torch.stack(rgbs).to(embedder.device, memory_format=torch.channels_last)
-    with torch.inference_mode():
-        embeds = embedder(batch).detach().cpu().numpy().astype(np.float32)
+    with TORCH_INFERENCE():
+        embeds = (
+            embedder(batch.to(next(embedder.parameters()).device))
+            .detach()
+            .cpu()
+            .numpy()
+            .astype(np.float32)
+        )
 
     embeds /= np.linalg.norm(embeds, axis=1, keepdims=True) + 1e-12
     return embeds

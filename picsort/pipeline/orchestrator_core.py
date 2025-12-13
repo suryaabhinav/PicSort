@@ -30,19 +30,7 @@ def run_stage_a(
     progress: None,
 ) -> pd.DataFrame:
 
-    # unique_paths_set = set(
-    #     df_stage_duplicates[~df_stage_duplicates["is_duplicate"]]["path"].tolist()
-    # )
-    # imgs_to_process = [p for p in list_images(root) if p.name in unique_paths_set]
-
-    # log.info(f"[INFO] Stage A: Processing {len(imgs_to_process)} unique images")
-
-    # yolo = YOLOProcessor(cfg, ctx, models)
-    # yolo_results = yolo.process_batch(imgs_to_process, cfg.yolo.batch_size)
-
     df_stage_a = stage_a(root, df_stage_duplicates, ctx, models, cfg, progress)
-
-    # df_stage_a = df_stage_a.merge(df_stage_duplicates["path", "md5"], on="path", how="left")
 
     return df_stage_a
 

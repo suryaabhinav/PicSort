@@ -16,8 +16,8 @@ def tenegrad(gray: np.ndarray, mask: Optional[np.ndarray] = None) -> float:
     gy = cv2.Sobel(gray, cv2.CV_32F, 0, 1, ksize=3)
     g2 = gx**2 + gy**2
     if mask is not None:
-        g2 = g2 * mask
-    return float(np.mean(g2)) if g2.size else 0
+        g2 = g2[mask]
+    return float(np.mean(g2)) if g2.size else 0.0
 
 
 def multiscale_focus(gray: np.ndarray, mask: Optional[np.ndarray] = None, levels: int = 3) -> float:

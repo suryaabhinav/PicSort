@@ -111,7 +111,7 @@ def stage_b(
 
     if not fast_no_identity:
         single_person_with_faces = df_stage_b[
-            (df_stage_b["focus_label"] == "subject_in_foucs")
+            (df_stage_b["focus_label"] == "subject_in_focus")
             & (df_stage_b["person_count"] >= 1)
             & (df_stage_b["num_faces_found"] == 1)
         ].copy()
@@ -137,7 +137,7 @@ def stage_b(
             if E is None:
                 continue
 
-            for k in range(E.sharp[0]):
+            for k in range(E.shape[0]):
                 face_vecs.append(E[k])
                 img_map.append((idx, k))
 
@@ -151,7 +151,7 @@ def stage_b(
                 per_img_labels.setdefault(img_idx, []).append(int(label))
 
             for img_idx, labs in per_img_labels.items():
-                df_stage_b[img_idx, "_face_id_labels"] = labs
+                df_stage_b.at[img_idx, "_face_id_labels"] = labs
                 valid = [l for l in labs if l >= 0]
                 df_stage_b.at[img_idx, "identity_group"] = (
                     int(np.bincount(valid).argmax()) if valid else -1

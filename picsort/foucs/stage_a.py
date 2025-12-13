@@ -78,7 +78,7 @@ def stage_a(
             label = "subject_in_focus"
             if subj_s < t_subj:
                 if bg_s < (t_subj / 2):
-                    label = "blurry"
+                    label = "overall_soft_low_quality"
                 else:
                     label = "subject_soft_general"
             elif bg_s > t_bg and abs(subj_s - bg_s) < cfg.focus.closeness:

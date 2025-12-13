@@ -14,15 +14,10 @@ from api.logging_config import get_logger, log
 from api.progress import registry
 from api.schema import StartRunRequest
 from picsort.config import AppConfig
-
-# from picsort.log_config import make_logger
 from picsort.pipeline.orchestrator import (
     move_with_run_artifact,
     run_pipeline_background,
 )
-
-# SCRIPT_PATH = Path(__file__).resolve()
-# log = make_logger(SCRIPT_PATH)
 
 app = FastAPI(title="PicSort API", description="PicSort API", version="0.0.1")
 
@@ -121,10 +116,6 @@ async def start_pipeline(request: StartRunRequest, bg_tasks: BackgroundTasks):
     )
     fh.setFormatter(logging.Formatter("%(asctime)s | %(levelname)s | %(message)s"))
     run_logger.addHandler(fh)
-    # run.run_logger = run_logger # Store on state if needed, but not strictly required by schema unless added.
-    # actually user said: "run.run_logger = run_logger # store on state if you want"
-    # I'll create a dynamic attribute or just ensure orchestrator uses the right logger via get_logger lookup or passing it.
-    # The user snippet showed: run.run_logger = run_logger
     run.run_logger = run_logger
 
     async def run_job():
@@ -135,7 +126,7 @@ async def start_pipeline(request: StartRunRequest, bg_tasks: BackgroundTasks):
             run.emit_threadsafe(event={"event": "result", "analytics": analytics})
 
         except Exception as e:
-            log.exception("Pipeline failed for run %s", run.id)  # DEBUG 3
+            log.exception("Pipeline failed for run %s", run.id)
             run.error = str(e)
             run.stage = "error"
             run.emit_threadsafe(event={"event": "error", "error": str(e)})

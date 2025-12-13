@@ -71,7 +71,6 @@ def embed_images_openclip_batch(
             try:
                 batch = torch.cat(batch_tensors, dim=0).to(ctx.device_str)
                 with torch.inference_mode():
-                    # embeds = model.encode_image(batch).cpu().numpy().astype(np.float32)
                     feature = model.encode_image(batch)
                 feature_np = feature.detach().cpu().numpy().astype(np.float32)
 
