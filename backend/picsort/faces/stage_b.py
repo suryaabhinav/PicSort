@@ -4,18 +4,18 @@ from typing import Callable, Dict, List, Optional, Tuple
 import numpy as np
 import pandas as pd
 
-from api.logging_config import log
-from picsort.config import AppConfig, Models, RuntimeContext
-from picsort.detection.retina_mtcnn import (
-    build_mtcnn,
-    build_retinaface,
-    detect_faces_smart,
-)
-from picsort.detection.yolo_face import build_yolov8_face
-from picsort.faces.clustering import graph_clusters, remap_labels_sequential
-from picsort.faces.embeddings import embed_face_batch, get_facenet_embedder
-from picsort.io.utils import load_bgr_exif_safe
-from picsort.utils.helpers import to_box_list_strict
+from backend.api.logging_config import log
+from backend.picsort.config import AppConfig, Models, RuntimeContext
+from backend.picsort.detection.retina_mtcnn import (build_mtcnn,
+                                                    build_retinaface,
+                                                    detect_faces_smart)
+from backend.picsort.detection.yolo_face import build_yolov8_face
+from backend.picsort.faces.clustering import (graph_clusters,
+                                              remap_labels_sequential)
+from backend.picsort.faces.embeddings import (embed_face_batch,
+                                              get_facenet_embedder)
+from backend.picsort.io.utils import load_bgr_exif_safe
+from backend.picsort.utils.helpers import to_box_list_strict
 
 ProgressFn = Optional[Callable[[int, int, Optional[str]], None]]
 

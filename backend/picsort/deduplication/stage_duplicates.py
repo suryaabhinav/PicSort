@@ -3,9 +3,9 @@ from typing import Callable, Optional
 
 import pandas as pd
 
-from api.logging_config import log
-from picsort.config import AppConfig
-from picsort.io.utils import list_images, md5_hash
+from backend.api.logging_config import log
+from backend.picsort.config import AppConfig
+from backend.picsort.io.utils import list_images, md5_hash
 
 ProgressFn = Optional[Callable[[int, int, Optional[str]], None]]
 

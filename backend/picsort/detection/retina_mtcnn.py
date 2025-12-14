@@ -5,10 +5,10 @@ import cv2
 import numpy as np
 import torch
 
-from api.logging_config import log
-from picsort.config import RuntimeContext
-from picsort.detection.yolo_face import detect_faces_yolo_smart
-from picsort.utils.helpers import rot90_ccw
+from backend.api.logging_config import log
+from backend.picsort.config import RuntimeContext
+from backend.picsort.detection.yolo_face import detect_faces_yolo_smart
+from backend.picsort.utils.helpers import rot90_ccw
 
 
 def build_retinaface(ctx: RuntimeContext) -> Tuple[bool, Optional[object], Optional[object]]:
@@ -21,7 +21,7 @@ def build_retinaface(ctx: RuntimeContext) -> Tuple[bool, Optional[object], Optio
         Tuple[bool, Optional[object], Optional[object]]: (enabled: bool, detect_fn_or_None, model_or_None)
     """
     try:
-        RF_MODULE = importlib.import_module("retinafce.RetinaFace")
+        RF_MODULE = importlib.import_module("retinaface.RetinaFace")
         RF_BUILD = getattr(RF_MODULE, "build_model", None)
         RF_DETECT = getattr(RF_MODULE, "detect_faces", None)
         if RF_BUILD is None or RF_DETECT is None:

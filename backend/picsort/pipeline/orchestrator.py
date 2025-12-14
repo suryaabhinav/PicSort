@@ -4,18 +4,15 @@ from typing import Any, Dict, Tuple
 
 import pandas as pd
 
-from api.logging_config import get_logger
-from picsort.config import AppConfig, Models, RuntimeContext
-from picsort.pipeline.orchestrator_core import (
-    apply_grouping,
-    broadcast,
-    run_stage_a,
-    run_stage_b_faces,
-    run_stage_c_scene,
-    run_stage_duplicates,
-)
-from picsort.utils.device import choose_device
-from picsort.utils.helpers import apply_move
+from backend.api.logging_config import get_logger
+from backend.picsort.config import AppConfig, Models, RuntimeContext
+from backend.picsort.pipeline.orchestrator_core import (apply_grouping,
+                                                        broadcast, run_stage_a,
+                                                        run_stage_b_faces,
+                                                        run_stage_c_scene,
+                                                        run_stage_duplicates)
+from backend.picsort.utils.device import choose_device
+from backend.picsort.utils.helpers import apply_move
 
 log = get_logger()
 

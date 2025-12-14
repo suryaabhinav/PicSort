@@ -2,15 +2,13 @@ from pathlib import Path
 
 import pandas as pd
 
-from picsort.config import AppConfig, Models, RuntimeContext
-from picsort.deduplication.stage_duplicates import (
-    broadcast_to_duplicates,
-    stage_duplicates,
-)
-from picsort.faces.stage_b import stage_b
-from picsort.foucs.stage_a import stage_a
-from picsort.grouping.final import grouping
-from picsort.scene.stage_c import stage_c
+from backend.picsort.config import AppConfig, Models, RuntimeContext
+from backend.picsort.deduplication.stage_duplicates import (
+    broadcast_to_duplicates, stage_duplicates)
+from backend.picsort.faces.stage_b import stage_b
+from backend.picsort.foucs.stage_a import stage_a
+from backend.picsort.grouping.final import grouping
+from backend.picsort.scene.stage_c import stage_c
 
 
 def run_stage_duplicates(root: Path, cfg: AppConfig, progress=None) -> pd.DataFrame:

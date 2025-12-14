@@ -5,9 +5,9 @@ import cv2
 import numpy as np
 from ultralytics import YOLO
 
-from api.logging_config import log
-from picsort.config import AppConfig, Models, RuntimeContext
-from picsort.io.utils import load_bgr_exif_safe
+from backend.api.logging_config import log
+from backend.picsort.config import AppConfig, Models, RuntimeContext
+from backend.picsort.io.utils import load_bgr_exif_safe
 
 
 class YOLOProcessor:

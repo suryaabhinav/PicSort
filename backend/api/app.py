@@ -10,14 +10,12 @@ from fastapi.exceptions import HTTPException
 from fastapi.responses import JSONResponse
 from sse_starlette.sse import EventSourceResponse
 
-from api.logging_config import get_logger, log
-from api.progress import registry
-from api.schema import StartRunRequest
-from picsort.config import AppConfig
-from picsort.pipeline.orchestrator import (
-    move_with_run_artifact,
-    run_pipeline_background,
-)
+from backend.api.logging_config import get_logger, log
+from backend.api.progress import registry
+from backend.api.schema import StartRunRequest
+from backend.picsort.config import AppConfig
+from backend.picsort.pipeline.orchestrator import (move_with_run_artifact,
+                                                   run_pipeline_background)
 
 app = FastAPI(title="PicSort API", description="PicSort API", version="0.0.1")
 

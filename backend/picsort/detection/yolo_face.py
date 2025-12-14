@@ -3,9 +3,9 @@ from typing import List, Optional, Tuple
 import numpy as np
 from ultralytics.models.yolo.model import YOLO
 
-from api.logging_config import log
-from picsort.config import RuntimeContext
-from picsort.utils.helpers import rot90_ccw
+from backend.api.logging_config import log
+from backend.picsort.config import RuntimeContext
+from backend.picsort.utils.helpers import rot90_ccw
 
 
 def build_yolov8_face(weights_path: str, ctx: RuntimeContext) -> Tuple[bool, object]:

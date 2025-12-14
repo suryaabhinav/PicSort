@@ -1,7 +1,7 @@
 import hdbscan
 import numpy as np
 
-from picsort.config import AppConfig
+from backend.picsort.config import AppConfig
 
 
 def cluster_hdbscan(E: np.ndarray, cfg: AppConfig) -> np.ndarray:
