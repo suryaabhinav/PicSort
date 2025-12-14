@@ -1,68 +1,63 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+/* Typography scale helpers */
+@layer base {
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+  html,
+  body,
+  #root {
+    height: 100%;
   }
-  a:hover {
-    color: #747bff;
+
+  body {
+    @apply bg-surface text-gray-200 antialiased;
   }
-  button {
-    background-color: #f9f9f9;
+}
+
+
+
+/* Reusable patterns */
+@layer components {
+  .card {
+    @apply rounded-2xl bg-surface-card shadow-soft border border-white/5;
+  }
+
+  .card-body {
+    @apply p-5 md:p-6;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition;
+  }
+
+  .btn-primary {
+    @apply bg-white text-surface hover:bg-gray-100 active:bg-gray-200;
+  }
+
+  .btn-ghost {
+    @apply bg-transparent text-gray-300 hover:text-white hover:bg-white/5;
+  }
+
+  .input {
+    @apply w-full rounded-xl bg-surface-soft/60 border border-white/10 px-3 py-2 text-sm text-gray-100 placeholder-gray-500 outline-none focus:ring-2 focus:ring-white/20;
+  }
+
+  .checkbox {
+    @apply h-4 w-4 rounded border-white/20 text-white focus:ring-white/30;
+  }
+
+  .section-title {
+    @apply text-sm uppercase tracking-wider text-gray-400;
+  }
+
+  .kpi {
+    @apply rounded-xl border border-white/5 bg-white/5 px-4 py-3;
+  }
+
+  .divider {
+    @apply h-px w-full bg-white/5 my-4;
   }
 }
