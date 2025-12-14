@@ -1,4 +1,3 @@
-import logging
 from pathlib import Path
 from typing import Callable, Dict, List, Tuple
 
@@ -7,9 +6,11 @@ import PIL.Image
 import torch
 import torch.nn as nn
 
-from api.logging_config import get_logger, log
+from api.logging_config import log
 from picsort.config import AppConfig, RuntimeContext
 from picsort.io.utils import load_pil_exif_rgb
+
+TORCH_INFERENCE = torch.inference_mode if hasattr(torch, "inference_mode") else torch.no_grad
 
 
 def get_openclip(
@@ -70,7 +71,7 @@ def embed_images_openclip_batch(
         if batch_tensors:
             try:
                 batch = torch.cat(batch_tensors, dim=0).to(ctx.device_str)
-                with torch.inference_mode():
+                with TORCH_INFERENCE():
                     feature = model.encode_image(batch)
                 feature_np = feature.detach().cpu().numpy().astype(np.float32)
 

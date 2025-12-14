@@ -1,11 +1,10 @@
-import logging
 from pathlib import Path
 from typing import Callable, Dict, List, Optional, Tuple
 
 import numpy as np
 import pandas as pd
 
-from api.logging_config import get_logger, log
+from api.logging_config import log
 from picsort.config import AppConfig, Models, RuntimeContext
 from picsort.detection.retina_mtcnn import (
     build_mtcnn,

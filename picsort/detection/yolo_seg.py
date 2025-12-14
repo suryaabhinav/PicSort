@@ -1,4 +1,3 @@
-import logging
 from pathlib import Path
 from typing import Dict, List, Optional
 
@@ -6,7 +5,7 @@ import cv2
 import numpy as np
 from ultralytics import YOLO
 
-from api.logging_config import get_logger, log
+from api.logging_config import log
 from picsort.config import AppConfig, Models, RuntimeContext
 from picsort.io.utils import load_bgr_exif_safe
 

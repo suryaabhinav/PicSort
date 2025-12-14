@@ -1,11 +1,10 @@
-import logging
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional
+from typing import Callable, Optional
 
 import cv2
 import pandas as pd
 
-from api.logging_config import get_logger, log
+from api.logging_config import log
 from picsort.config import AppConfig, Models, RuntimeContext
 from picsort.detection.yolo_seg import YOLOProcessor
 from picsort.foucs.metrics import masked_focus

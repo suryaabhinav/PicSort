@@ -1,15 +1,12 @@
-import logging
 from pathlib import Path
 
 import pandas as pd
 
-from api.logging_config import get_logger, log
 from picsort.config import AppConfig, Models, RuntimeContext
 from picsort.deduplication.stage_duplicates import (
     broadcast_to_duplicates,
     stage_duplicates,
 )
-from picsort.detection.yolo_seg import YOLOProcessor
 from picsort.faces.stage_b import stage_b
 from picsort.foucs.stage_a import stage_a
 from picsort.grouping.final import grouping

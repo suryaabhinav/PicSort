@@ -1,10 +1,9 @@
-import logging
 from pathlib import Path
 from typing import Callable, Optional
 
 import pandas as pd
 
-from api.logging_config import get_logger, log
+from api.logging_config import log
 from picsort.config import AppConfig
 from picsort.io.utils import list_images, md5_hash
 

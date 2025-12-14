@@ -1,10 +1,9 @@
-import logging
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
-from api.logging_config import get_logger, log
+from api.logging_config import log
 from picsort.config import AppConfig, Models, RuntimeContext
 from picsort.scene.hdbscan_wrap import cluster_hdbscan
 from picsort.scene.openclip import embed_images_openclip_batch, get_openclip
