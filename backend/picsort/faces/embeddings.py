@@ -3,9 +3,8 @@ from typing import List, Optional, Tuple
 import cv2
 import numpy as np
 import torch
+from picsort.config import RuntimeContext
 from PIL import Image
-
-from backend.picsort.config import RuntimeContext
 
 TORCH_INFERENCE = torch.inference_mode if hasattr(torch, "inference_mode") else torch.no_grad
 

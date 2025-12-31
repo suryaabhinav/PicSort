@@ -5,10 +5,9 @@ import numpy as np
 import PIL.Image
 import torch
 import torch.nn as nn
-
-from backend.api.logging_config import log
-from backend.picsort.config import AppConfig, RuntimeContext
-from backend.picsort.io.utils import load_pil_exif_rgb
+from api.logging_config import log
+from picsort.config import AppConfig, RuntimeContext
+from picsort.io.utils import load_pil_exif_rgb
 
 TORCH_INFERENCE = torch.inference_mode if hasattr(torch, "inference_mode") else torch.no_grad
 

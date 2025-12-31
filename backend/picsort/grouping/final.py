@@ -1,8 +1,7 @@
 from typing import Counter
 
 import pandas as pd
-
-from backend.api.logging_config import log
+from api.logging_config import log
 
 
 def compute_id_image_counts(df_stage_c: pd.DataFrame) -> pd.DataFrame:

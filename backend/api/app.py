@@ -5,19 +5,30 @@ from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
 import numpy as np
+from api.logging_config import get_logger, log
+from api.progress import registry
+from api.schema import StartRunRequest
 from fastapi import BackgroundTasks, FastAPI, Request
 from fastapi.exceptions import HTTPException
 from fastapi.responses import JSONResponse
+from picsort.config import AppConfig
+from picsort.pipeline.orchestrator import (
+    move_with_run_artifact,
+    run_pipeline_background,
+)
 from sse_starlette.sse import EventSourceResponse
 
-from backend.api.logging_config import get_logger, log
-from backend.api.progress import registry
-from backend.api.schema import StartRunRequest
-from backend.picsort.config import AppConfig
-from backend.picsort.pipeline.orchestrator import (move_with_run_artifact,
-                                                   run_pipeline_background)
-
 app = FastAPI(title="PicSort API", description="PicSort API", version="0.0.1")
+
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 class NumpyEncoder(json.JSONEncoder):
@@ -102,8 +113,27 @@ async def start_pipeline(request: StartRunRequest, bg_tasks: BackgroundTasks):
     run.loop = asyncio.get_running_loop()
     cfg = AppConfig(root=request.root)
 
+    # Validate path immediately
+    path_root = Path(request.root)
+    if not path_root.exists() or not path_root.is_dir():
+        raise HTTPException(
+            status_code=400, detail=f"Path does not exist or is not a directory: {request.root}"
+        )
+
     if request.batch_size:
         cfg.scene.batch_size = request.batch_size
+
+    # Apply analysis parameters if provided
+    if request.focus_t_subj is not None:
+        cfg.focus.t_subj = request.focus_t_subj
+    if request.focus_t_bg is not None:
+        cfg.focus.t_bg = request.focus_t_bg
+    if request.yolo_person_conf is not None:
+        cfg.yolo.person_conf = request.yolo_person_conf
+    if request.face_conf is not None:
+        cfg.face.conf = request.face_conf
+    if request.face_sim_tresh is not None:
+        cfg.face.sim_tresh = request.face_sim_tresh
 
     # Setup run logger
     run_logger = get_logger(f"picsort.run.{run.id}")

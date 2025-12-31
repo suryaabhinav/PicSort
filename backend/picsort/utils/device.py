@@ -1,6 +1,5 @@
 import torch
-
-from backend.picsort.config import RuntimeContext
+from picsort.config import RuntimeContext
 
 
 def choose_device(preferred: str) -> RuntimeContext:
