@@ -123,6 +123,18 @@ async def start_pipeline(request: StartRunRequest, bg_tasks: BackgroundTasks):
     if request.batch_size:
         cfg.scene.batch_size = request.batch_size
 
+    # Apply analysis parameters if provided
+    if request.focus_t_subj is not None:
+        cfg.focus.t_subj = request.focus_t_subj
+    if request.focus_t_bg is not None:
+        cfg.focus.t_bg = request.focus_t_bg
+    if request.yolo_person_conf is not None:
+        cfg.yolo.person_conf = request.yolo_person_conf
+    if request.face_conf is not None:
+        cfg.face.conf = request.face_conf
+    if request.face_sim_tresh is not None:
+        cfg.face.sim_tresh = request.face_sim_tresh
+
     # Setup run logger
     run_logger = get_logger(f"picsort.run.{run.id}")
     run_log_path = Path("runs") / run.id
