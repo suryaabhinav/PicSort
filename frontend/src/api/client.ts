@@ -14,6 +14,9 @@ export async function post<T>(path: string, body?: any): Promise<T> {
         },
         body: body ? JSON.stringify(body) : undefined,
     });
-    if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+    if (!res.ok) {
+        const err = await res.json().catch(() => ({ detail: res.statusText }));
+        throw new Error(err.detail || res.statusText);
+    }
     return res.json() as Promise<T>;
 }

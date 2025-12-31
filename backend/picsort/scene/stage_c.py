@@ -2,12 +2,10 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-
-from backend.api.logging_config import log
-from backend.picsort.config import AppConfig, Models, RuntimeContext
-from backend.picsort.scene.hdbscan_wrap import cluster_hdbscan
-from backend.picsort.scene.openclip import (embed_images_openclip_batch,
-                                            get_openclip)
+from api.logging_config import log
+from picsort.config import AppConfig, Models, RuntimeContext
+from picsort.scene.hdbscan_wrap import cluster_hdbscan
+from picsort.scene.openclip import embed_images_openclip_batch, get_openclip
 
 
 def stage_c(

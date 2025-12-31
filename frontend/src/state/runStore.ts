@@ -27,6 +27,7 @@ export const useRunStore = create<RunState>((set, get) => ({
             next.stage = ev.stage; next.progress = ev.progress;
         }
         if (ev.event === "analytics") next.analytics = ev.data;
+        if (ev.event === "result") next.analytics = ev.analytics;
         if (ev.event === "done") next.analytics = ev.analytics ?? prev.analytics;
         set(next);
     },

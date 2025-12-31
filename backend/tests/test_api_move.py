@@ -10,7 +10,7 @@ def test_move_endpoint(client, mock_move_artifact):
     # We can fetch it and manually set its state.
 
     # Let's go with Option 2
-    from backend.api.progress import registry
+    from api.progress import registry
 
     # 1. Start run
     payload = {"root": "/tmp/test_move"}

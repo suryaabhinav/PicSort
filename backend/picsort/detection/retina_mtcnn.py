@@ -4,11 +4,10 @@ from typing import List, Optional, Tuple
 import cv2
 import numpy as np
 import torch
-
-from backend.api.logging_config import log
-from backend.picsort.config import RuntimeContext
-from backend.picsort.detection.yolo_face import detect_faces_yolo_smart
-from backend.picsort.utils.helpers import rot90_ccw
+from api.logging_config import log
+from picsort.config import RuntimeContext
+from picsort.detection.yolo_face import detect_faces_yolo_smart
+from picsort.utils.helpers import rot90_ccw
 
 
 def build_retinaface(ctx: RuntimeContext) -> Tuple[bool, Optional[object], Optional[object]]:
